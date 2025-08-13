@@ -81,9 +81,9 @@ export const jobService = {
   createJob: async (payload: any) => {
   try {
     // Validate salary format before sending
-    if (payload.salaryRange && !/^\d+\s?LPA$/i.test(payload.salaryRange)) {
-      throw new Error('Salary must be in format "X LPA" (e.g., "10 LPA")');
-    }
+    // if (payload.salaryRange && !/^\d+\s?LPA$/i.test(payload.salaryRange)) {
+    //   throw new Error('Salary must be in format "X LPA" (e.g., "10 LPA")');
+    // }
 
     const res = await axios.post(`${API_BASE}/jobs`, payload, {
       headers: {
