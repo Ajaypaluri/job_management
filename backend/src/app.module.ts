@@ -242,6 +242,49 @@
 // })
 // export class AppModule {}
 
+// import { Module } from '@nestjs/common';
+// import { TypeOrmModule } from '@nestjs/typeorm';
+// import { JobsModule } from './jobs/jobs.module';
+// import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { Job } from './jobs/job.entity';
+// import { AppController } from './app.controller';
+
+// @Module({
+//   imports: [
+//     ConfigModule.forRoot({
+//       isGlobal: true,
+//       envFilePath: `.env.${process.env.NODE_ENV || 'production'}`,
+//     }),
+//     TypeOrmModule.forRootAsync({
+//       imports: [ConfigModule],
+//       useFactory: (config: ConfigService) => ({
+//         type: 'postgres',
+//         host: config.get('DB_HOST'),
+//         port: config.get<number>('DB_PORT'),
+//         username: config.get('DB_USERNAME'),
+//         password: config.get('DB_PASSWORD'),
+//         database: config.get('DB_NAME'),
+//         entities: [Job],
+//         synchronize: false, // Always false in production
+//         logging: true,
+//         ssl: true,
+//         extra: {
+//           ssl: {
+//             rejectUnauthorized: false
+//           },
+//           application_name: 'job_management_api',
+//         },
+//         migrations: ['dist/migrations/*.js'],
+//         migrationsRun: true,
+//       }),
+//       inject: [ConfigService],
+//     }),
+//     JobsModule,
+//   ],
+//   controllers: [AppController],
+//   providers: [], // Removed AppService since we're not using it
+// })
+// export class AppModule {}
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JobsModule } from './jobs/jobs.module';
@@ -259,29 +302,25 @@ import { AppController } from './app.controller';
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: config.get<number>('DB_PORT'),
-        username: config.get('DB_USERNAME'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_NAME'),
+        url: config.get('DATABASE_URL'), // Using the full connection URL
         entities: [Job],
-        synchronize: false, // Always false in production
+        synchronize: false, // Critical for production
         logging: true,
-        ssl: true,
+        ssl: true, // Required for Render PostgreSQL
         extra: {
           ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false // Needed for Render's SSL
           },
           application_name: 'job_management_api',
         },
         migrations: ['dist/migrations/*.js'],
-        migrationsRun: true,
+        migrationsRun: true, // Auto-run migrations on startup
       }),
       inject: [ConfigService],
     }),
     JobsModule,
   ],
   controllers: [AppController],
-  providers: [], // Removed AppService since we're not using it
+  providers: [],
 })
 export class AppModule {}
