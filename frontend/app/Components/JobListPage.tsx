@@ -506,7 +506,7 @@ const JobListPage = () => {
                 }} 
               /> */}
                   <img 
-                      src="/Frame 54.jpg" 
+                      src="/Frame54.jpg" 
                       alt="Company Logo"
                       style={{
                         width: 40,
