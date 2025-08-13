@@ -348,7 +348,7 @@ import { AppController } from './app.controller';
             type: 'postgres',
             url: config.get('DATABASE_URL'),
             entities: [Job],
-            synchronize: false,
+            synchronize: true,
             logging: config.get('DB_LOGGING') === 'true',
             ssl: { rejectUnauthorized: false },
             migrations: ['dist/migrations/*.js'],
