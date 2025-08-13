@@ -138,6 +138,58 @@
 // })
 // export class AppModule {}
 
+// //move
+// import { Module } from '@nestjs/common';
+// import { TypeOrmModule } from '@nestjs/typeorm';
+// import { JobsModule } from './jobs/jobs.module';
+// import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { DataSource } from 'typeorm';
+// import { Job } from './jobs/job.entity';
+// import { AppController } from './app.controller';
+
+// @Module({
+//   imports: [
+//     ConfigModule.forRoot({
+//       isGlobal: true,
+//       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+//     }),
+//     TypeOrmModule.forRootAsync({
+//       imports: [ConfigModule],
+//       useFactory: (config: ConfigService) => ({
+//         type: 'postgres',
+//         host: config.get('DB_HOST', 'localhost'),
+//         port: config.get<number>('DB_PORT', 5432),
+//         username: config.get('DB_USERNAME', 'postgres'),
+//         password: config.get('DB_PASSWORD', 'Ajay@123'),
+//         database: config.get('DB_NAME', 'job_management'),
+//         entities: [Job],
+//         synchronize: config.get('NODE_ENV') !== 'production',
+//         logging: config.get('DB_LOGGING') === 'true',
+//         ...(config.get('NODE_ENV') === 'production' && {
+//           url: config.get('DATABASE_URL'),
+//           ssl: { rejectUnauthorized: false },
+//           migrations: ['dist/migrations/*.js'],
+//           migrationsRun: true,
+//         }),
+//         // Fix for case sensitivity
+//         entitySkipConstructor: true,
+//         extra: {
+//           application_name: 'job_management_api'
+//         }
+//       }),
+//       inject: [ConfigService],
+//       dataSourceFactory: async (options) => {
+//         const dataSource = new DataSource(options);
+//         await dataSource.initialize();
+//         return dataSource;
+//       },
+//     }),
+//     JobsModule,
+//   ],
+//   controllers: [AppController],
+// })
+// export class AppModule {}
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JobsModule } from './jobs/jobs.module';
@@ -145,6 +197,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { Job } from './jobs/job.entity';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -170,11 +223,10 @@ import { AppController } from './app.controller';
           migrations: ['dist/migrations/*.js'],
           migrationsRun: true,
         }),
-        // Fix for case sensitivity
         entitySkipConstructor: true,
         extra: {
-          application_name: 'job_management_api'
-        }
+          application_name: 'job_management_api',
+        },
       }),
       inject: [ConfigService],
       dataSourceFactory: async (options) => {
@@ -186,5 +238,6 @@ import { AppController } from './app.controller';
     JobsModule,
   ],
   controllers: [AppController],
+  providers: [AppService], // ✅ This fixes the Render injection error
 })
 export class AppModule {}
