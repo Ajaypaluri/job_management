@@ -33,7 +33,7 @@ This project was developed as part of the **Full Stack SDE Intern** assignment a
 ### **Frontend**
 - **Framework**: [Next.js](https://nextjs.org/) (React)
 - **State Management**: React Context API
-- **Styling**: CSS Modules / Tailwind CSS
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **HTTP Client**: Axios
 - **Deployment**: [Vercel](https://vercel.com)
 
