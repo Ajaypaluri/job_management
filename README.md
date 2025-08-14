@@ -31,15 +31,14 @@ This project was developed as part of the **Full Stack SDE Intern** assignment a
 ## 🛠️ Tech Stack
 
 ### **Frontend**
-- React.js (Vite)
+- Next.js (Vite)
 - Tailwind CSS
 - Axios (API calls)
 - React Hooks & Functional Components
 
 ### **Backend**
-- Node.js
-- Express.js
-- MongoDB with Mongoose ORM
+- Nest.js
+- Postgre SQL
 - CORS enabled REST API
 
 ---
