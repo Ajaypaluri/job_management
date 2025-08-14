@@ -609,7 +609,7 @@ const JobListPage = () => {
             {/* // First modify the salary range display to show LPA instead of k */}
             <Box style={{ minWidth: 250 }}>
               <Text size="sm" c="dimmed" mb={5}>Salary Per Annum (LPA)</Text>
-              <Text size="sm" mb={10}>₹{salaryRange[0]} - ₹{salaryRange[1]} LPA</Text>
+              <Text size="sm" mb={10}>₹{salaryRange[0]} - ₹{salaryRange[1]}LPA</Text>
               <RangeSlider 
                 value={salaryRange} 
                 onChange={(value) => {

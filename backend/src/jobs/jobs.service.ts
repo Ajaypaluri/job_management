@@ -226,9 +226,9 @@ export class JobsService {
   async create(createJobDto: CreateJobDto): Promise<Job> {
     try {
       // Validate salary format
-      if (createJobDto.salaryRange && !/^\d+\s?LPA$/i.test(createJobDto.salaryRange)) {
-        throw new Error('Salary must be in format "X LPA" (e.g., "10 LPA")');
-      }
+      // if (createJobDto.salaryRange && !/^\d+\s?LPA$/i.test(createJobDto.salaryRange)) {
+      //   throw new Error('Salary must be in format "X LPA" (e.g., "10 LPA")');
+      // }
 
       const job = this.jobRepository.create(createJobDto);
       return await this.jobRepository.save(job);
