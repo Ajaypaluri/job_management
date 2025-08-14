@@ -31,15 +31,18 @@ This project was developed as part of the **Full Stack SDE Intern** assignment a
 ## 🛠️ Tech Stack
 
 ### **Frontend**
-- Next.js (Vite)
-- Tailwind CSS
-- Axios (API calls)
-- React Hooks & Functional Components
+- **Framework**: [Next.js](https://nextjs.org/) (React)
+- **State Management**: React Context API
+- **Styling**: CSS Modules / Tailwind CSS
+- **HTTP Client**: Axios
+- **Deployment**: [Vercel](https://vercel.com)
 
 ### **Backend**
-- Nest.js
-- Postgre SQL
-- CORS enabled REST API
+- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
+- **ORM**: [TypeORM](https://typeorm.io/)
+- **Database**: PostgreSQL (Hosted on [Render](https://render.com))
+- **Deployment**: [Render](https://render.com)
+
 
 ---
 
