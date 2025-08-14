@@ -51,19 +51,45 @@ This project was developed as part of the **Full Stack SDE Intern** assignment a
 ```text
 
 job_management/
+├── backend/                          # NestJS Backend
+│   ├── src/
+│   │   ├── app/                      # Core application setup
+│   │   │   ├── app.controller.ts     # Root route controller (e.g., health check)
+│   │   │   ├── app.module.ts         # Root module imports
+│   │   │   └── app.service.ts        # Shared services
+│   │   │
+│   │   ├── jobs/                     # Jobs feature module
+│   │   │   ├── dto/
+│   │   │   │   └── job.entity.ts     # Database entity definition
+│   │   │   ├── jobs.controller.ts    # REST endpoints (/jobs)
+│   │   │   ├── jobs.module.ts        # Feature module registration
+│   │   │   └── jobs.service.ts       # Business logic
+│   │   │
+│   │   └── main.ts                   # App entry point
+│   │
+│   ├── test/                         # Jest/unit tests
+│   ├── .env                          # Database/API secrets
+│   ├── nest-cli.json                 # NestJS generator config
+│   └── tsconfig.json                 # TypeScript settings
 │
-├── frontend/ # React frontend
-│ ├── src/
-│ │ ├── components/ # UI components
-│ │ ├── pages/ # Pages (Job List, etc.)
-│ │ └── App.jsx
-│ └── package.json
-│
-├── backend/ # Express backend
-│ ├── models/ # MongoDB models
-│ ├── routes/ # API routes
-│ ├── server.js # Entry point
-│ └── package.json
+└── frontend/                        # Next.js Frontend
+    ├── app/                          
+    │   ├── Components/               # Reusable UI components
+    │   │   └── JobListPage.tsx       # Job listing component
+    │   │
+    │   ├── services/                 # API clients
+    │   │   └── jobService.ts         # Axios/API calls to backend
+    │   │
+    │   ├── globals.css               # Tailwind/global styles
+    │   ├── layout.tsx                # Root layout (metadata, providers)
+    │   └── page.tsx                  # Homepage (/) 
+    │
+    ├── public/                       # Static assets
+    │   └── favicon.ico
+    │
+    ├── .env.local                    # Frontend env vars (API_URL)
+    ├── next.config.js                # Next.js plugins/config
+    └── tailwind.config.js            # Tailwind customization
 ```
 
 ---
