@@ -174,18 +174,6 @@ export class JobsService {
   //     // }
 
 
-  //     // if (filters.minSalary !== undefined || filters.maxSalary !== undefined) {
-  //     //     const min = filters.minSalary ?? 0;
-  //     //     const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
-
-  //     //     where.salaryRange = Raw((alias) => {
-  //     //       return `
-  //     //         -- Extract the first number from strings like "10LPA", "10 LPA", or "10"
-  //     //         CAST(REGEXP_REPLACE(${alias}, '[^0-9].*$', '') AS NUMERIC) 
-  //     //         BETWEEN ${min} AND ${max}
-  //     //       `;
-  //     //     });
-  //     //   }
 
 
   //     if (
