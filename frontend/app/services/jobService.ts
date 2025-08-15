@@ -118,8 +118,9 @@
 
 import axios from 'axios';
 
-// const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://job-management-backend-701e.onrender.com';
+
 
 
 export const jobService = {
