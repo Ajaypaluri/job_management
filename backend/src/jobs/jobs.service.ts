@@ -135,52 +135,125 @@ export class JobsService {
     }
   }
 
+  // async findAll(filters: {
+  //   title?: string;
+  //   location?: string;
+  //   jobType?: string;
+  //   minSalary?: number;
+  //   maxSalary?: number;
+  //   experience?: string;
+  // } = {}): Promise<Job[]> {
+  //   try {
+  //     const where: FindOptionsWhere<Job> = {};
+
+  //     if (filters.title) where.title = ILike(`%${filters.title}%`);
+  //     if (filters.location) where.location = ILike(`%${filters.location}%`);
+  //     // if (filters.experience)
+  //     //   where.experienceLevel = ILike(`%${filters.experience}%`);
+  //     // if (filters.jobType) where.jobType = filters.jobType;
+  //     if (filters.jobType) {
+  //       where.jobType = filters.jobType as Job['jobType'];
+  //     }
+  //     // if (filters.minSalary !== undefined || filters.maxSalary !== undefined) {
+  //     //   const min = filters.minSalary ?? 0;
+  //     //   const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
+
+  //     //   where.salaryRange = Raw((alias) => {
+  //     //     return `(
+  //     //       ${alias} IS NOT NULL AND ${alias} != '' AND
+  //     //       (
+  //     //         -- Case 1: Pure number (e.g., "10")
+  //     //         (${alias} ~ '^[0-9]+$' AND CAST(${alias} AS NUMERIC) BETWEEN ${min} AND ${max})
+  //     //         OR
+  //     //         -- Case 2: Number with text (e.g., "10LPA" or "10 LPA")
+  //     //         (${alias} ~ '^[0-9]+' AND 
+  //     //         CAST(SUBSTRING(${alias} FROM '^([0-9]+)') AS NUMERIC) BETWEEN ${min} AND ${max})
+  //     //       )
+  //     //     )`;
+  //     //   });
+  //     // }
+
+
+  //     // if (filters.minSalary !== undefined || filters.maxSalary !== undefined) {
+  //     //     const min = filters.minSalary ?? 0;
+  //     //     const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
+
+  //     //     where.salaryRange = Raw((alias) => {
+  //     //       return `
+  //     //         -- Extract the first number from strings like "10LPA", "10 LPA", or "10"
+  //     //         CAST(REGEXP_REPLACE(${alias}, '[^0-9].*$', '') AS NUMERIC) 
+  //     //         BETWEEN ${min} AND ${max}
+  //     //       `;
+  //     //     });
+  //     //   }
+
+
+  //     if (
+  //       filters.minSalary !== undefined ||
+  //       filters.maxSalary !== undefined
+  //     ) {
+  //       const min = filters.minSalary ?? 0;
+  //       const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
+
+  //       where.salaryRange = Raw(
+  //         (alias) =>
+  //           `CAST(REGEXP_REPLACE(${alias}, '[^0-9.]', '', 'g') AS NUMERIC) BETWEEN ${min} AND ${max}`,
+  //       );
+  //     }
+
+  //     const jobs = await this.jobRepository.find({ where });
+
+  //     if (jobs.length === 0) {
+  //       this.logger.warn('No jobs found with the given filters');
+  //     }
+
+  //     return jobs;
+  //   } catch (error: any) {
+  //     this.logger.error(`Failed to fetch jobs: ${error.message}`);
+  //     throw new BadRequestException('Failed to fetch jobs');
+  //   }
+  // }
   async findAll(filters: {
-    title?: string;
-    location?: string;
-    jobType?: string;
-    minSalary?: number;
-    maxSalary?: number;
-    experience?: string;
-  } = {}): Promise<Job[]> {
-    try {
-      const where: FindOptionsWhere<Job> = {};
+  title?: string;
+  location?: string;
+  jobType?: string;
+  minSalary?: number;
+  maxSalary?: number;
+  experience?: string;
+} = {}): Promise<Job[]> {
+  try {
+    const where: FindOptionsWhere<Job> = {};
 
-      if (filters.title) where.title = ILike(`%${filters.title}%`);
-      if (filters.location) where.location = ILike(`%${filters.location}%`);
-      // if (filters.experience)
-      //   where.experienceLevel = ILike(`%${filters.experience}%`);
-      // if (filters.jobType) where.jobType = filters.jobType;
-      if (filters.jobType) {
-        where.jobType = filters.jobType as Job['jobType'];
-      }
+    if (filters.title) where.title = ILike(`%${filters.title}%`);
+    if (filters.location) where.location = ILike(`%${filters.location}%`);
+    if (filters.jobType) where.jobType = filters.jobType as Job['jobType'];
 
+    if (filters.minSalary !== undefined || filters.maxSalary !== undefined) {
+      const min = filters.minSalary ?? 0;
+      const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
 
-      if (
-        filters.minSalary !== undefined ||
-        filters.maxSalary !== undefined
-      ) {
-        const min = filters.minSalary ?? 0;
-        const max = filters.maxSalary ?? Number.MAX_SAFE_INTEGER;
-
-        where.salaryRange = Raw(
-          (alias) =>
-            `CAST(REGEXP_REPLACE(${alias}, '[^0-9.]', '', 'g') AS NUMERIC) BETWEEN ${min} AND ${max}`,
-        );
-      }
-
-      const jobs = await this.jobRepository.find({ where });
-
-      if (jobs.length === 0) {
-        this.logger.warn('No jobs found with the given filters');
-      }
-
-      return jobs;
-    } catch (error: any) {
-      this.logger.error(`Failed to fetch jobs: ${error.message}`);
-      throw new BadRequestException('Failed to fetch jobs');
+      // Safely filter numeric values inside salaryRange string
+      where.salaryRange = Raw(
+        (alias) =>
+          `(${alias} IS NOT NULL AND ${alias} != '' AND
+           CAST(REGEXP_REPLACE(${alias}, '[^0-9.]', '', 'g') AS NUMERIC)
+           BETWEEN ${min} AND ${max})`,
+      );
     }
+
+    const jobs = await this.jobRepository.find({ where });
+
+    if (jobs.length === 0) {
+      this.logger.warn('No jobs found with the given filters');
+    }
+
+    return jobs;
+  } catch (error: any) {
+    this.logger.error(`Failed to fetch jobs: ${error.message}`);
+    throw new BadRequestException('Failed to fetch jobs');
   }
+}
+
 
   async findOne(id: number): Promise<Job> {
     try {

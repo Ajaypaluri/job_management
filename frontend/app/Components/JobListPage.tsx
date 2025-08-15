@@ -407,7 +407,7 @@ type JobItem = {
 
 const JobListPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const [salaryRange, setSalaryRange] = useState<[number, number]>([5, 10]); // LPA default
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 1]); // LPA default
   const [jobs, setJobs] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -615,6 +615,25 @@ const JobListPage = () => {
                 value={salaryRange}
                 onChange={(value) => {
                   setSalaryRange(value);
+                }}
+                onChangeEnd={(value) => {
+                  // Only filter when user stops sliding
+                  handleFilter({
+                    ...filterForm.values,
+                    minSalary: value[0], // Already in LPA
+                    maxSalary: value[1]  // Already in LPA
+                  });
+                }}
+                min={0}
+                max={50}
+                color="dark"
+                step={1}
+              />
+
+              {/* <RangeSlider
+                value={salaryRange}
+                onChange={(value) => {
+                  setSalaryRange(value);
                   handleFilter({
                     ...filterForm.values,
                     minSalary: value[0],
@@ -625,7 +644,7 @@ const JobListPage = () => {
                 max={50}
                 style={{ width: '100%' }}
                 color="dark"
-              />
+              /> */}
             </Box>
           </Group>
         </Paper>
