@@ -13,8 +13,7 @@ async function bootstrap() {
   // Enable CORS for frontend
   app.enableCors({
     origin: [
-      'https://job-management-frontend-ten.vercel.app',
-      'https://job-management-frontend-701e.onrender.app',
+      'https://job-management-frontend-ten.vercel.app'
       'http://localhost:3000',
       'http://localhost:3001',
     ],
