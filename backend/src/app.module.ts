@@ -1,149 +1,48 @@
-// // // // //2
-// // // // // import { Module } from '@nestjs/common';
-// // // // // import { TypeOrmModule } from '@nestjs/typeorm';
-// // // // // import { JobsModule } from './jobs/jobs.module';
-// // // // // import { ConfigModule, ConfigService } from '@nestjs/config';
 
-// // // // // @Module({
-// // // // //   imports: [
-// // // // //     ConfigModule.forRoot(), // Loads .env files
-// // // // //     TypeOrmModule.forRootAsync({
-// // // // //       imports: [ConfigModule],
-// // // // //       useFactory: (config: ConfigService) => ({
-// // // // //         type: 'postgres',
-// // // // //         url: config.get('DATABASE_URL'), // From Render env vars
-// // // // //         ssl: true, // Required for Render
-// // // // //         extra: {
-// // // // //           ssl: {
-// // // // //             rejectUnauthorized: false, // Needed for Render's free tier
-// // // // //           },
-// // // // //         },
-// // // // //         autoLoadEntities: true,
-// // // // //         synchronize: true, // Disable in production later
-// // // // //       }),
-// // // // //       inject: [ConfigService],
-// // // // //     }),
-// // // // //     JobsModule,
-// // // // //   ],
-// // // // // })
-// // // // // export class AppModule {}
-
-// // // // import { Module } from '@nestjs/common';
-// // // // import { TypeOrmModule } from '@nestjs/typeorm';
-// // // // import { JobsModule } from './jobs/jobs.module';
-// // // // import { ConfigModule, ConfigService } from '@nestjs/config';
-// // // // import { DataSource } from 'typeorm';
-
-// // // // @Module({
-// // // //   imports: [
-// // // //     ConfigModule.forRoot({
-// // // //       isGlobal: true,
-// // // //       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-// // // //     }),
-// // // //     TypeOrmModule.forRootAsync({
-// // // //       imports: [ConfigModule],
-// // // //       useFactory: (config: ConfigService) => {
-// // // //         const isProduction = config.get('NODE_ENV') === 'production';
-// // // //         const dbUrl = config.get('DATABASE_URL');
-        
-// // // //         // For local development with plain username/password
-// // // //         if (!isProduction) {
-// // // //           return {
-// // // //             type: 'postgres',
-// // // //             host: 'localhost',
-// // // //             port: 5432,
-// // // //             username: 'postgres',
-// // // //             password: 'Ajay@123',
-// // // //             database: 'job_management',
-// // // //             entities: [__dirname + '/**/*.entity{.ts,.js}'],
-// // // //             autoLoadEntities: true,
-// // // //             synchronize: true,
-// // // //             logging: config.get('DB_LOGGING') === 'true',
-// // // //           };
-// // // //         }
-
-// // // //         // For Render production
-// // // //         return {
-// // // //           type: 'postgres',
-// // // //           url: dbUrl,
-// // // //           ssl: true,
-// // // //           extra: {
-// // // //             ssl: {
-// // // //               rejectUnauthorized: false,
-// // // //             },
-// // // //           },
-// // // //           entities: [__dirname + '/**/*.entity{.ts,.js}'],
-// // // //           autoLoadEntities: true,
-// // // //           synchronize: false,
-// // // //           logging: config.get('DB_LOGGING') === 'true',
-// // // //           migrations: [__dirname + '/migrations/*{.ts,.js}'],
-// // // //           migrationsRun: true,
-// // // //         };
-// // // //       },
-// // // //       inject: [ConfigService],
-// // // //       async dataSourceFactory(options) {
-// // // //         if (!options) {
-// // // //           throw new Error('No database options provided');
-// // // //         }
-// // // //         const dataSource = new DataSource(options);
-// // // //         await dataSource.initialize();
-// // // //         return dataSource;
-// // // //       },
-// // // //     }),
-// // // //     JobsModule,
-// // // //   ],
-// // // // })
-// // // // export class AppModule {}
 // // // import { Module } from '@nestjs/common';
 // // // import { TypeOrmModule } from '@nestjs/typeorm';
 // // // import { JobsModule } from './jobs/jobs.module';
 // // // import { ConfigModule, ConfigService } from '@nestjs/config';
-// // // import { DataSource } from 'typeorm';
 // // // import { Job } from './jobs/job.entity';
+// // // import { AppController } from './app.controller';
 
 // // // @Module({
 // // //   imports: [
 // // //     ConfigModule.forRoot({
 // // //       isGlobal: true,
-// // //       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+// // //       envFilePath: `.env.${process.env.NODE_ENV || 'production'}`,
 // // //     }),
 // // //     TypeOrmModule.forRootAsync({
 // // //       imports: [ConfigModule],
 // // //       useFactory: (config: ConfigService) => ({
 // // //         type: 'postgres',
-// // //         host: config.get('DB_HOST', 'localhost'),
-// // //         port: config.get<number>('DB_PORT', 5432),
-// // //         username: config.get('DB_USERNAME', 'postgres'),
-// // //         password: config.get('DB_PASSWORD', 'Ajay@123'),
-// // //         database: config.get('DB_NAME', 'job_management'),
+// // //         url: config.get('DATABASE_URL'), // Using the full connection URL
 // // //         entities: [Job],
-// // //         synchronize: config.get('NODE_ENV') !== 'production',
-// // //         logging: config.get('DB_LOGGING') === 'true',
-// // //         ...(config.get('NODE_ENV') === 'production' && {
-// // //           url: config.get('DATABASE_URL'),
-// // //           ssl: { rejectUnauthorized: false },
-// // //           migrations: ['dist/migrations/*.js'],
-// // //           migrationsRun: true,
-// // //         }),
+// // //         synchronize: false, // Critical for production
+// // //         logging: true,
+// // //         ssl: true, // Required for Render PostgreSQL
+// // //         extra: {
+// // //           ssl: {
+// // //             rejectUnauthorized: false // Needed for Render's SSL
+// // //           },
+// // //           application_name: 'job_management_api',
+// // //         },
+// // //         migrations: ['dist/migrations/*.js'],
+// // //         migrationsRun: true, // Auto-run migrations on startup
 // // //       }),
 // // //       inject: [ConfigService],
-// // //       dataSourceFactory: async (options) => {
-// // //         const dataSource = new DataSource(options);
-// // //         await dataSource.initialize();
-// // //         return dataSource;
-// // //       },
 // // //     }),
 // // //     JobsModule,
 // // //   ],
+// // //   controllers: [AppController],
+// // //   providers: [],
 // // // })
 // // // export class AppModule {}
 
-// // // //move
 // // // import { Module } from '@nestjs/common';
 // // // import { TypeOrmModule } from '@nestjs/typeorm';
 // // // import { JobsModule } from './jobs/jobs.module';
 // // // import { ConfigModule, ConfigService } from '@nestjs/config';
-// // // import { DataSource } from 'typeorm';
 // // // import { Job } from './jobs/job.entity';
 // // // import { AppController } from './app.controller';
 
@@ -155,34 +54,35 @@
 // // //     }),
 // // //     TypeOrmModule.forRootAsync({
 // // //       imports: [ConfigModule],
-// // //       useFactory: (config: ConfigService) => ({
-// // //         type: 'postgres',
-// // //         host: config.get('DB_HOST', 'localhost'),
-// // //         port: config.get<number>('DB_PORT', 5432),
-// // //         username: config.get('DB_USERNAME', 'postgres'),
-// // //         password: config.get('DB_PASSWORD', 'Ajay@123'),
-// // //         database: config.get('DB_NAME', 'job_management'),
-// // //         entities: [Job],
-// // //         synchronize: config.get('NODE_ENV') !== 'production',
-// // //         logging: config.get('DB_LOGGING') === 'true',
-// // //         ...(config.get('NODE_ENV') === 'production' && {
-// // //           url: config.get('DATABASE_URL'),
-// // //           ssl: { rejectUnauthorized: false },
-// // //           migrations: ['dist/migrations/*.js'],
-// // //           migrationsRun: true,
-// // //         }),
-// // //         // Fix for case sensitivity
-// // //         entitySkipConstructor: true,
-// // //         extra: {
-// // //           application_name: 'job_management_api'
+// // //       useFactory: (config: ConfigService) => {
+// // //         const isProduction = config.get('NODE_ENV') === 'production';
+
+// // //         if (isProduction) {
+// // //           return {
+// // //             type: 'postgres',
+// // //             url: config.get('DATABASE_URL'),
+// // //             entities: [Job],
+// // //             synchronize: true,
+// // //             logging: config.get('DB_LOGGING') === 'true',
+// // //             ssl: { rejectUnauthorized: false },
+// // //             migrations: ['dist/migrations/*.js'],
+// // //             migrationsRun: true,
+// // //           };
 // // //         }
-// // //       }),
-// // //       inject: [ConfigService],
-// // //       dataSourceFactory: async (options) => {
-// // //         const dataSource = new DataSource(options);
-// // //         await dataSource.initialize();
-// // //         return dataSource;
+
+// // //         return {
+// // //           type: 'postgres',
+// // //           host: config.get('DB_HOST', 'localhost'),
+// // //           port: config.get<number>('DB_PORT', 5432),
+// // //           username: config.get('DB_USERNAME', 'postgres'),
+// // //           password: config.get('DB_PASSWORD', 'Ajay@123'),
+// // //           database: config.get('DB_NAME', 'job_management'),
+// // //           entities: [Job],
+// // //           synchronize: true,
+// // //           logging: config.get('DB_LOGGING') === 'true',
+// // //         };
 // // //       },
+// // //       inject: [ConfigService],
 // // //     }),
 // // //     JobsModule,
 // // //   ],
@@ -194,150 +94,139 @@
 // // import { TypeOrmModule } from '@nestjs/typeorm';
 // // import { JobsModule } from './jobs/jobs.module';
 // // import { ConfigModule, ConfigService } from '@nestjs/config';
-// // import { DataSource } from 'typeorm';
 // // import { Job } from './jobs/job.entity';
-// // import { AppController } from './app.controller';
-// // import { AppService } from './app.service';
+
+// // // NEW:
+// // import { ServeStaticModule } from '@nestjs/serve-static';
+// // import { join } from 'path';
 
 // // @Module({
 // //   imports: [
+// //     // Serve the frontend static build
+// //     ServeStaticModule.forRoot({
+// //       rootPath: join(__dirname, '..', 'public'),
+// //       exclude: ['/jobs*'], // ensure API routes are not swallowed by static serving
+// //     }),
+
 // //     ConfigModule.forRoot({
 // //       isGlobal: true,
 // //       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
 // //     }),
+
 // //     TypeOrmModule.forRootAsync({
 // //       imports: [ConfigModule],
-// //       useFactory: (config: ConfigService) => ({
-// //         type: 'postgres',
-// //         host: config.get('DB_HOST', 'localhost'),
-// //         port: config.get<number>('DB_PORT', 5432),
-// //         username: config.get('DB_USERNAME', 'postgres'),
-// //         password: config.get('DB_PASSWORD', 'Ajay@123'),
-// //         database: config.get('DB_NAME', 'job_management'),
-// //         entities: [Job],
-// //         synchronize: config.get('NODE_ENV') !== 'production',
-// //         logging: config.get('DB_LOGGING') === 'true',
-// //         ...(config.get('NODE_ENV') === 'production' && {
-// //           url: config.get('DATABASE_URL'),
-// //           ssl: { rejectUnauthorized: false },
-// //           migrations: ['dist/migrations/*.js'],
-// //           migrationsRun: true,
-// //         }),
-// //         entitySkipConstructor: true,
-// //         extra: {
-// //           application_name: 'job_management_api',
-// //         },
-// //       }),
-// //       inject: [ConfigService],
-// //       dataSourceFactory: async (options) => {
-// //         const dataSource = new DataSource(options);
-// //         await dataSource.initialize();
-// //         return dataSource;
+// //       useFactory: (config: ConfigService) => {
+// //         const isProduction = config.get('NODE_ENV') === 'production';
+// //         if (isProduction) {
+// //           return {
+// //             type: 'postgres',
+// //             url: config.get('DATABASE_URL'),
+// //             entities: [Job],
+// //             // keep synchronize *false* in real prod; enable temporarily if you must
+// //             synchronize: true,
+// //             logging: config.get('DB_LOGGING') === 'true',
+// //             ssl: { rejectUnauthorized: false },
+// //           };
+// //         }
+// //         return {
+// //           type: 'postgres',
+// //           host: config.get('DB_HOST', 'localhost'),
+// //           port: config.get<number>('DB_PORT', 5432),
+// //           username: config.get('DB_USERNAME', 'postgres'),
+// //           password: config.get('DB_PASSWORD', 'Ajay@123'),
+// //           database: config.get('DB_NAME', 'job_management'),
+// //           entities: [Job],
+// //           synchronize: true,
+// //           logging: config.get('DB_LOGGING') === 'true',
+// //         };
 // //       },
-// //     }),
-// //     JobsModule,
-// //   ],
-// //   controllers: [AppController],
-// //   providers: [AppService], // ✅ This fixes the Render injection error
-// // })
-// // export class AppModule {}
-
-// // import { Module } from '@nestjs/common';
-// // import { TypeOrmModule } from '@nestjs/typeorm';
-// // import { JobsModule } from './jobs/jobs.module';
-// // import { ConfigModule, ConfigService } from '@nestjs/config';
-// // import { Job } from './jobs/job.entity';
-// // import { AppController } from './app.controller';
-
-// // @Module({
-// //   imports: [
-// //     ConfigModule.forRoot({
-// //       isGlobal: true,
-// //       envFilePath: `.env.${process.env.NODE_ENV || 'production'}`,
-// //     }),
-// //     TypeOrmModule.forRootAsync({
-// //       imports: [ConfigModule],
-// //       useFactory: (config: ConfigService) => ({
-// //         type: 'postgres',
-// //         host: config.get('DB_HOST'),
-// //         port: config.get<number>('DB_PORT'),
-// //         username: config.get('DB_USERNAME'),
-// //         password: config.get('DB_PASSWORD'),
-// //         database: config.get('DB_NAME'),
-// //         entities: [Job],
-// //         synchronize: false, // Always false in production
-// //         logging: true,
-// //         ssl: true,
-// //         extra: {
-// //           ssl: {
-// //             rejectUnauthorized: false
-// //           },
-// //           application_name: 'job_management_api',
-// //         },
-// //         migrations: ['dist/migrations/*.js'],
-// //         migrationsRun: true,
-// //       }),
 // //       inject: [ConfigService],
 // //     }),
+
 // //     JobsModule,
 // //   ],
-// //   controllers: [AppController],
-// //   providers: [], // Removed AppService since we're not using it
+// //   controllers: [], // IMPORTANT: remove AppController for "/" so the UI can load at root
 // // })
 // // export class AppModule {}
+
 // import { Module } from '@nestjs/common';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { JobsModule } from './jobs/jobs.module';
 // import { ConfigModule, ConfigService } from '@nestjs/config';
 // import { Job } from './jobs/job.entity';
-// import { AppController } from './app.controller';
+
+// import { ServeStaticModule } from '@nestjs/serve-static';
+// import { join } from 'path';
 
 // @Module({
 //   imports: [
+//     // Serve the frontend static build
+//     ServeStaticModule.forRoot({
+//       rootPath: join(__dirname, '..', 'public'),
+//       exclude: ['/jobs*', '/api*'], // avoid API being caught by static serving
+//     }),
+
 //     ConfigModule.forRoot({
 //       isGlobal: true,
-//       envFilePath: `.env.${process.env.NODE_ENV || 'production'}`,
+//       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
 //     }),
+
 //     TypeOrmModule.forRootAsync({
 //       imports: [ConfigModule],
-//       useFactory: (config: ConfigService) => ({
-//         type: 'postgres',
-//         url: config.get('DATABASE_URL'), // Using the full connection URL
-//         entities: [Job],
-//         synchronize: false, // Critical for production
-//         logging: true,
-//         ssl: true, // Required for Render PostgreSQL
-//         extra: {
-//           ssl: {
-//             rejectUnauthorized: false // Needed for Render's SSL
-//           },
-//           application_name: 'job_management_api',
-//         },
-//         migrations: ['dist/migrations/*.js'],
-//         migrationsRun: true, // Auto-run migrations on startup
-//       }),
+//       useFactory: (config: ConfigService) => {
+//         const isProduction = config.get('NODE_ENV') === 'production';
+//         if (isProduction) {
+//           return {
+//             type: 'postgres',
+//             url: config.get('DATABASE_URL'),
+//             entities: [Job],
+//             synchronize: true, // set false for real production
+//             logging: config.get('DB_LOGGING') === 'true',
+//             ssl: { rejectUnauthorized: false },
+//           };
+//         }
+//         return {
+//           type: 'postgres',
+//           host: config.get('DB_HOST', 'localhost'),
+//           port: config.get<number>('DB_PORT', 5432),
+//           username: config.get('DB_USERNAME', 'postgres'),
+//           password: config.get('DB_PASSWORD', 'Ajay@123'),
+//           database: config.get('DB_NAME', 'job_management'),
+//           entities: [Job],
+//           synchronize: true,
+//           logging: config.get('DB_LOGGING') === 'true',
+//         };
+//       },
 //       inject: [ConfigService],
 //     }),
+
 //     JobsModule,
 //   ],
-//   controllers: [AppController],
-//   providers: [],
+//   controllers: [],
 // })
 // export class AppModule {}
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JobsModule } from './jobs/jobs.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Job } from './jobs/job.entity';
-import { AppController } from './app.controller';
+
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    // Serve frontend static build from backend/client
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client','out'), // points to backend/client
+      exclude: ['/jobs*', '/api*'], // avoid catching API routes
+    }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {
@@ -348,11 +237,9 @@ import { AppController } from './app.controller';
             type: 'postgres',
             url: config.get('DATABASE_URL'),
             entities: [Job],
-            synchronize: true,
+            synchronize: false, // keep false in real production
             logging: config.get('DB_LOGGING') === 'true',
             ssl: { rejectUnauthorized: false },
-            migrations: ['dist/migrations/*.js'],
-            migrationsRun: true,
           };
         }
 
@@ -370,8 +257,9 @@ import { AppController } from './app.controller';
       },
       inject: [ConfigService],
     }),
+
     JobsModule,
   ],
-  controllers: [AppController],
+  controllers: [],
 })
 export class AppModule {}
