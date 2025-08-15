@@ -118,7 +118,9 @@
 
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+// const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
+
 
 export const jobService = {
   // getJobs: async (params?: Record<string, any>) => {
